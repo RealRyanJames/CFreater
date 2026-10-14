@@ -1,9 +1,9 @@
 {
     "FileName": "",
     "Project": "GoLang",
-    "NameProject": "",
-    "Custom": true,
+    "NameProject": "aaa",
+    "Custom": "false",
     "FileOpened": true,
-    "ReadJsonFile": false
+    "ReadJsonFile": "true"
 
 }

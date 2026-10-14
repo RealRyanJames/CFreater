@@ -31,11 +31,16 @@ pub mod file_reader {
         let data: Value = serde_json::from_str(&data_file)?;
         let d = data["FileName"].as_str().unwrap();
 
-        if d.len() > 1 {
-            let mut file_s = FileCreated { file: d };
-            File::create(file_s.check().file)?;
-            println!("File Name: {}", d);
+        let project_custom = data["Custom"].as_str().unwrap();
+
+        if project_custom.contains(&truth_base("true").to_string()) {
+            let project_name = data["NameProject"].as_str().unwrap();
+
+            Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
+                .spawn()
+                .expect("No File or Go Project Created");
         }
+
         let project = data["Project"].as_str().unwrap();
         if project == "GoLang" {
             let mut file_go = FileCreated { file: "main.go" };
@@ -55,17 +60,7 @@ pub mod file_reader {
                 .expect("Cannot run Go Project");
         }
 
-        if project.contains("RustProject") {
-            let project_name = data["NameProject"].as_str().unwrap();
-
-            Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
-                .spawn()
-                .expect("No File or Go Project Created");
-        }
-
-        let project_custom = data["Custom"].as_str().unwrap();
-
-        if project_custom.contains(&truth_base("true").to_string()) {
+        if project == "RustProject" {
             let project_name = data["NameProject"].as_str().unwrap();
 
             Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
@@ -75,7 +70,7 @@ pub mod file_reader {
 
         let project_read_json = data["ReadJsonFile"].as_str().unwrap();
 
-        if project_read_json.contains(&truth_base("true").to_string()) {
+        if project_read_json == "true" {
             let project_name = data["NameProject"].as_str().unwrap();
 
             Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
@@ -89,7 +84,7 @@ pub mod file_reader {
             );
             stdin().read_line(&mut read_json_parser).unwrap();
 
-            if read_json_parser.contains("GoLang") {
+            if read_json_parser == "GoLang" {
                 let mut file_go = FileCreated { file: "main.go" };
                 File::create(file_go.check().file)?;
 
@@ -105,22 +100,28 @@ pub mod file_reader {
                     .stderr(Stdio::piped())
                     .output()
                     .expect("Cannot run Go Project");
+            } else {
+                if read_json_parser == "Cargo" || read_json_parser == "rust" {
+                    let project_name = data["NameProject"].as_str().unwrap();
+
+                    let project_info: FinalProjectBase<String> = FinalProjectBase {
+                        name: project_name.to_string(),
+                    };
+
+                    Command::new("cmd")
+                        .args(["/C", project_info.name.as_str()])
+                        .stdout(Stdio::piped())
+                        .stderr(Stdio::piped())
+                        .output()
+                        .expect(&"Cannot run or Create Rust Project...".to_uppercase());
+                }
             }
+        }
 
-            if read_json_parser.contains("Cargo") || read_json_parser.contains("rust") {
-                let project_name = data["NameProject"].as_str().unwrap();
-
-                let project_info: FinalProjectBase<String> = FinalProjectBase {
-                    name: project_name.to_string(),
-                };
-
-                Command::new("cmd")
-                    .args(["/C", project_info.name.as_str()])
-                    .stdout(Stdio::piped())
-                    .stderr(Stdio::piped())
-                    .output()
-                    .expect(&"Cannot run or Create Rust Project...".to_uppercase());
-            }
+        if d.len() > 1 {
+            let mut file_s = FileCreated { file: d };
+            File::create(file_s.check().file)?;
+            println!("File Name: {}", d);
         }
 
         Ok(())
