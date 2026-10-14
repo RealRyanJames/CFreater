@@ -1,9 +1,11 @@
 use std::io::{Read, stdin};
 
 mod file_parsin;
+mod golang;
 mod opener;
 mod paths;
 mod projects;
+mod structs;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     if is_created() {

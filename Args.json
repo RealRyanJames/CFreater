@@ -1,6 +1,6 @@
 {
     "FileName": "",
     "Project": "GoLang",
-    "NameProject": "TodoListCLI",
+    "NameProject": "go mod init TodoListCLI",
     "FileOpened": true
 }

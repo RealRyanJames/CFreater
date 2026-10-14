@@ -4,7 +4,10 @@ pub mod file_reader {
         process::{Command, Stdio},
     };
 
-    use crate::file_parsin::{CreatedByArgs, FileCreated};
+    use crate::{
+        file_parsin::{CreatedByArgs, FileCreated},
+        golang::FinalProjectBase,
+    };
 
     pub fn opener() -> Result<(), Box<dyn std::error::Error>> {
         use serde_json::Value;
@@ -26,8 +29,14 @@ pub mod file_reader {
             let mut file_go = FileCreated { file: "main.go" };
             File::create(file_go.check().file)?;
 
+            let project_name = data["NameProject"].as_str().unwrap();
+
+            let project_info: FinalProjectBase<String> = FinalProjectBase {
+                name: project_name.to_string(),
+            };
+
             Command::new("cmd")
-                .args(["/C", "go mod init app"])
+                .args(["/C", project_info.name.as_str()])
                 .stdout(Stdio::piped())
                 .stderr(Stdio::piped())
                 .output()
