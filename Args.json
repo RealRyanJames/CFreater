@@ -1,9 +1,9 @@
 {
     "FileName": "",
     "Project": "GoLang",
-    "NameProject": "",
-    "Custom": true,
+    "NameProject": "ToolingCatch",
+    "Custom": "false",
     "FileOpened": true,
-    "ReadJsonFile": false
-
+    "ReadJsonFile": "true",
+    "ModFileCreated": "true"
 }
