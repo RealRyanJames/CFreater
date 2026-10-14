@@ -2,5 +2,7 @@
     "FileName": "",
     "Project": "GoLang",
     "NameProject": "go mod init TodoListCLI",
+    "Custom": true,
     "FileOpened": true
+
 }
