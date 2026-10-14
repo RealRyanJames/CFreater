@@ -70,6 +70,23 @@ pub mod file_reader {
 
         let project_read_json = data["ReadJsonFile"].as_str().unwrap();
 
+        let mod_file = data["ReadJsonFile"].as_str().unwrap();
+
+        if mod_file == &truth_base("true").to_string() {
+            let name_prod = data["NameProject"].as_str().unwrap();
+
+            let project_inner_name: FinalProjectBase<String> = FinalProjectBase {
+                name: name_prod.to_string(),
+            };
+
+            Command::new("cmd")
+                .arg("/C")
+                .arg("go mod init")
+                .arg(project_inner_name.name)
+                .spawn()
+                .expect("No File or Go Project Created");
+        }
+
         if project_read_json == "true" {
             let project_name = data["NameProject"].as_str().unwrap();
 
