@@ -1,3 +1,9 @@
+fn truth_base(project: &str) -> bool {
+    let is_true = if project == "true" { true } else { false };
+
+    is_true
+}
+
 pub mod file_reader {
     use std::{
         fs::{self, File},
@@ -7,6 +13,7 @@ pub mod file_reader {
     use crate::{
         file_parsin::{CreatedByArgs, FileCreated},
         golang::FinalProjectBase,
+        opener::truth_base,
     };
 
     pub fn opener() -> Result<(), Box<dyn std::error::Error>> {
@@ -44,6 +51,16 @@ pub mod file_reader {
         }
 
         if project.contains("RustProject") {
+            let project_name = data["NameProject"].as_str().unwrap();
+
+            Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
+                .spawn()
+                .expect("No File or Go Project Created");
+        }
+
+        let project_custom = data["Custom"].as_str().unwrap();
+
+        if project_custom.contains(&truth_base("true").to_string()) {
             let project_name = data["NameProject"].as_str().unwrap();
 
             Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
