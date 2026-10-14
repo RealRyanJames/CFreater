@@ -1,8 +1,9 @@
 {
     "FileName": "",
     "Project": "GoLang",
-    "NameProject": "go mod init TodoListCLI",
+    "NameProject": "",
     "Custom": true,
-    "FileOpened": true
+    "FileOpened": true,
+    "ReadJsonFile": false
 
 }
