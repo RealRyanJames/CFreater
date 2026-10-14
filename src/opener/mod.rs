@@ -7,6 +7,7 @@ fn truth_base(project: &str) -> bool {
 pub mod file_reader {
     use std::{
         fs::{self, File},
+        io::stdin,
         process::{Command, Stdio},
     };
 
@@ -15,6 +16,10 @@ pub mod file_reader {
         golang::FinalProjectBase,
         opener::truth_base,
     };
+
+    pub fn read_input(str_message: &str) -> String {
+        format!("{}", str_message)
+    }
 
     pub fn opener() -> Result<(), Box<dyn std::error::Error>> {
         use serde_json::Value;
@@ -66,6 +71,56 @@ pub mod file_reader {
             Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
                 .spawn()
                 .expect("No File or Go Project Created");
+        }
+
+        let project_read_json = data["ReadJsonFile"].as_str().unwrap();
+
+        if project_read_json.contains(&truth_base("true").to_string()) {
+            let project_name = data["NameProject"].as_str().unwrap();
+
+            Command::new(format!("{}{}", "cargo new", project_name.to_lowercase()))
+                .spawn()
+                .expect("No File or Go Project Created");
+        } else {
+            let mut read_json_parser = String::new();
+            println!(
+                "{}",
+                read_input("Enter Option for Project Creation").to_uppercase()
+            );
+            stdin().read_line(&mut read_json_parser).unwrap();
+
+            if read_json_parser.contains("GoLang") {
+                let mut file_go = FileCreated { file: "main.go" };
+                File::create(file_go.check().file)?;
+
+                let project_name = data["NameProject"].as_str().unwrap();
+
+                let project_info: FinalProjectBase<String> = FinalProjectBase {
+                    name: project_name.to_string(),
+                };
+
+                Command::new("cmd")
+                    .args(["/C", project_info.name.as_str()])
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .output()
+                    .expect("Cannot run Go Project");
+            }
+
+            if read_json_parser.contains("Cargo") || read_json_parser.contains("rust") {
+                let project_name = data["NameProject"].as_str().unwrap();
+
+                let project_info: FinalProjectBase<String> = FinalProjectBase {
+                    name: project_name.to_string(),
+                };
+
+                Command::new("cmd")
+                    .args(["/C", project_info.name.as_str()])
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped())
+                    .output()
+                    .expect(&"Cannot run or Create Rust Project...".to_uppercase());
+            }
         }
 
         Ok(())
