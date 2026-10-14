@@ -43,14 +43,24 @@ pub mod file_reader {
 
         let directory_creation = data["DirectoryCreatedProject"].as_str().unwrap();
 
-        if !directory_creation.is_empty() {
-            fs::create_dir(format!("{}", directory_creation.to_string()))?;
-            println!("{}", "Created Dir".to_uppercase())
-        } else if !directory_creation.contains("Remove") || directory_creation.contains("remove") {
-            match fs::remove_dir(directory_creation) {
-                Ok(_) => println!("{}", "Removed Dir".to_uppercase()),
-                Err(e) => println!("{}{}", "Failed", e),
+        let path = Path::new(directory_creation);
+
+        if path.exists() {
+            println!("{}", format!("{}", "Exists".to_uppercase()));
+
+            if !directory_creation.is_empty() {
+                fs::create_dir(format!("{}", directory_creation.to_string()))?;
+                println!("{}", "Created Dir".to_uppercase())
+            } else if !directory_creation.contains("Remove")
+                || directory_creation.contains("remove")
+            {
+                match fs::remove_dir(directory_creation) {
+                    Ok(_) => println!("{}", "Removed Dir".to_uppercase()),
+                    Err(e) => println!("{}{}", "Failed", e),
+                }
             }
+        } else {
+            println!("{}", format!("{}", "Does Not Exists".to_uppercase()))
         }
 
         let project = data["Project"].as_str().unwrap();
